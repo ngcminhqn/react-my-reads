@@ -28,15 +28,18 @@ export default function SearchScreen() {
       setIsLoading(true);
 
       if (value) {
-        const res = await search(value, 50);
-        if (res && res?.length) {
-          setListSearchBooks(res);
+        if (value.length > 0) {
+          const res = await search(value, 50);
+          if (res && res?.length) {
+            setListSearchBooks(res);
+          } else {
+            setListSearchBooks([]);
+            throw Error();
+          }
         } else {
           setListSearchBooks([]);
-          throw Error();
         }
       } else {
-        setListSearchBooks([]);
       }
       setIsLoading(false);
     } catch (e) {
@@ -46,8 +49,10 @@ export default function SearchScreen() {
   }, []);
 
   useEffect(() => {
-    if (debouncedInputValue) {
+    if (debouncedInputValue && debouncedInputValue.length > 0) {
       onSearch(debouncedInputValue);
+    } else {
+      setListSearchBooks([]);
     }
   }, [debouncedInputValue, onSearch]);
 
